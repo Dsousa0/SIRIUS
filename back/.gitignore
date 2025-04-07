@@ -1,0 +1,72 @@
+# Ambiente virtual
+venv/
+env/
+ENV/
+.venv/
+
+# Arquivos do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Arquivos temporários
+*.log
+*.pot
+*.pyc
+*.pyo
+*.swp
+*.bak
+*.tmp
+
+# Arquivos de banco de dados local
+db.sqlite3
+*.sqlite3
+
+# Diretórios de migrações vazias
+*/migrations/__pycache__/
+*/migrations/*.pyc
+
+# Arquivos de configurações locais
+*.env
+.env.*
+.envrc
+secrets.json
+settings_local.py
+
+# Cache do Django
+*.mo
+*.pot
+*.pyc
+
+# Arquivos de IDEs e editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Pasta de arquivos estáticos e media gerados
+staticfiles/
+media/
+
+# Build e distribuição
+build/
+dist/
+*.egg-info/
+
+# Pip
+pip-log.txt
+
+# Coverage e testes
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
