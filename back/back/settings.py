@@ -29,8 +29,7 @@ SECRET_KEY = 'django-insecure-drho&j*mwu&$(&i#x9f_=!*ga7j(lz*u7twgqslzjlyy^lb3p6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["192.86.221.214", "localhost", "127.0.0.1"]
 
 # Application definition
 REST_FRAMEWORK = {
