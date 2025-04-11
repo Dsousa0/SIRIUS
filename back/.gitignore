@@ -27,11 +27,11 @@ db.sqlite3
 */migrations/*.pyc
 
 # Arquivos de configurações locais
-*.env
-.env.*
-.envrc
-secrets.json
-settings_local.py
+#*.env
+#.env.*
+#.envrc
+#secrets.json
+#settings_local.py
 
 # Cache do Django
 *.mo
