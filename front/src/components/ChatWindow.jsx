@@ -9,7 +9,7 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
 
   const criarChat = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/chats/', {
+      const response = await fetch('http://192.86.221.214:8000/api/chats/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
 
   const salvarMensagem = async (chat_id, role, content) => {
     try {
-      await fetch(`http://localhost:8000/api/chats/${chat_id}/mensagens/`, {
+      await fetch(`http://192.86.221.214:8000/api/chats/${chat_id}/mensagens/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
     if (isPrimeiraPergunta && input.length > 3) {
       try {
         const titulo = input.slice(0, 40)
-        await fetch(`http://localhost:8000/api/chats/${activeChatId}/`, {
+        await fetch(`http://192.86.221.214:8000/api/chats/${activeChatId}/`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
     setTyping(true)
 
     try {
-      const response = await fetch('http://localhost:8000/api/analyze/', {
+      const response = await fetch('http://192.86.221.214:8000/api/analyze/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
     formData.append('arquivo', selected)
 
     try {
-      const response = await fetch('http://localhost:8000/api/upload/', {
+      const response = await fetch('http://192.86.221.214:8000/api/upload/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
