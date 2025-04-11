@@ -17,7 +17,7 @@ from deep_translator import GoogleTranslator
 from rest_framework.permissions import IsAuthenticated
 
 # Configuração da API OpenRouter
-client = OpenAI(api_key=settings.OPENROUTER_API_KEY, base_url="https://openrouter.ai/api/v1")
+client = OpenAI(api_key='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', base_url="https://openrouter.ai/api/v1")
 
 class FileUploadView(APIView):
     parser_classes = [MultiPartParser, FormParser]  # Adiciona suporte para upload de arquivos
