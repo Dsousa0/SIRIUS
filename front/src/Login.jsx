@@ -48,7 +48,7 @@ function Login() {
   return (
     <>
       <div className={`login-container ${transicao ? 'fade-out' : ''}`}>
-        <img src="/public/SIRIUS LOGO.png"  alt="Logo"  className="login-imagem"/>
+      <img src="/SIRIUS LOGO.png" alt="Logo" className="login-imagem" />
         <h2>Login</h2>
         <input
           type="text"
