@@ -47,7 +47,10 @@ function Login() {
 
   return (
     <>
-      <div className={`login-container ${transicao ? 'fade-out' : ''}`}>
+      <div className={`login-container ${transicao ? 'fade-out' : ''}`} 
+       onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+       tabIndex={0}
+      >
       <img src="/SIRIUS LOGO.png" alt="Logo" className="login-imagem" />
         <h2>Login</h2>
         <input
@@ -55,12 +58,14 @@ function Login() {
           placeholder="Usuário"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
         />
         <input
           type="password"
           placeholder="Senha"
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
         />
         <button onClick={handleLogin}>Entrar</button>
         {erro && <p className="erro">{erro}</p>}

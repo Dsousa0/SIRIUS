@@ -187,8 +187,8 @@ body.dark .chat-container {
 }
 
 .message.system .bubble {
-  background: #f8d7da;
-  color: #842029;
+  background: #c3d8ff;
+  color: #005e94;
   font-style: italic;
 }
 

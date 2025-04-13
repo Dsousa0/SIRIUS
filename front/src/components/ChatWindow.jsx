@@ -1,12 +1,13 @@
-import React, { useState } from 'react' 
+import React, { useState, useEffect, useRef } from 'react' 
 import Message from './Message'
 
 function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId, setMessages, onChatCreated, atualizarTituloLocalmente }) {
   const [input, setInput] = useState('')
+  const messagesEndRef = useRef(null)
   const [fileId, setFileId] = useState(null)
   const [fileName, setFileName] = useState('')
   const token = localStorage.getItem('token')
-
+  
   const criarChat = async () => {
     try {
       const response = await fetch('http://localhost:8000/api/chats/', {
@@ -172,6 +173,14 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
     }
   }
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, typing])
+
   return (
     <div className="chat-container">
       <div className="messages">
@@ -187,6 +196,7 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className="input-bar">
