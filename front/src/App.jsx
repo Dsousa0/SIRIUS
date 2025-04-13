@@ -36,7 +36,7 @@ function App() {
 
   const fetchChats = async () => {
     try {
-      const response = await fetch('http://192.86.221.214:8000/api/chats/', {
+      const response = await fetch('http://localhost:8000/api/chats/', {
         headers: {
           'Accept': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -64,7 +64,7 @@ function App() {
   const handleChatSelect = async (id) => {
     setChatId(id)
     try {
-      const response = await fetch(`http://192.86.221.214:8000/api/chats/${id}/mensagens/`, {
+      const response = await fetch(`http://localhost:8000/api/chats/${id}/mensagens/`, {
         headers: {
           'Accept': 'application/json',
           'Authorization': `Bearer ${token}`
