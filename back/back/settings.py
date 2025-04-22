@@ -14,7 +14,7 @@ from pathlib import Path
 from decouple import config
 import os
 
-OPENROUTER_API_KEY = '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'
+OPENROUTER_API_KEY = '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'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -150,3 +150,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True  # Para desenvolvimento
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 512 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 512 * 1024 * 1024

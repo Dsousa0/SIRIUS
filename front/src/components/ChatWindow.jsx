@@ -88,25 +88,32 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
         console.error('Erro ao atualizar título do chat:', err)
       }
     }
-
-    if (!fileId) {
-      addMessage({ role: 'system', content: 'Envie um arquivo antes de fazer perguntas.' })
-      return
-    }
-
+    
     setTyping(true)
-
+    
     try {
-      const response = await fetch('http://localhost:8000/api/analyze/', {
+      let response
+      if (fileId) {
+        response = await fetch('http://localhost:8000/api/analyze/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ file_id: fileId, prompt: input }),
+        })
+    } else { 
+      response = await fetch('http://localhost:8000/api/chat-livre/',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ file_id: fileId, prompt: input }),
+        body: JSON.stringify({ prompt: input, chat_id: activeChatId }),
       })
-
+    }
       const contentType = response.headers.get('content-type')
 
       if (contentType && contentType.includes('application/json')) {
@@ -116,7 +123,10 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
         if (data.insights) {
           addMessage({ role: 'assistant', content: data.insights })
           await salvarMensagem(activeChatId, 'assistant', data.insights)
-        } else if (data.error) {
+        } else if (data.response) {
+          addMessage({ role: 'assistant', content: data.response })
+          await salvarMensagem(activeChatId, 'assistant', data.response)
+        }else if (data.error) {
           addMessage({ role: 'assistant', content: `❌ ${data.error}` })
         } else {
           addMessage({ role: 'assistant', content: '❌ Erro ao processar os dados.' })
@@ -131,7 +141,7 @@ function ChatWindow({ messages, addMessage, setTyping, typing, chatId, setChatId
       }
 
     } catch (error) {
-      console.error('Erro ao chamar /api/analyze/:', error)
+      console.error('Erro ao chamar /api/analyze/ ou /chat-livre/:', error)
       setTyping(false)
       addMessage({ role: 'assistant', content: '❌ Erro de conexão com o servidor.' })
     }

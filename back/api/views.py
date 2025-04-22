@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from .serializers import ArquivoSerializer, FileUploadSerializer, AnalyzeRequestSerializer, ChatSerializer, MensagemSerializer
-from.models import Arquivo, Chat, Mensagem
+from .models import Arquivo, Chat, Mensagem
 import pandas as pd
 import pdfplumber
 import docx
@@ -17,10 +17,10 @@ from deep_translator import GoogleTranslator
 from rest_framework.permissions import IsAuthenticated
 
 # Configuração da API OpenRouter
-client = OpenAI(api_key='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', base_url="https://openrouter.ai/api/v1")
+client = OpenAI(api_key='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', base_url="https://openrouter.ai/api/v1")
 
 class FileUploadView(APIView):
-    parser_classes = [MultiPartParser, FormParser]  # Adiciona suporte para upload de arquivos
+    parser_classes = [MultiPartParser, FormParser]  
 
     
     def get(self, request, *args, **kwargs):
@@ -41,55 +41,42 @@ class AnalyzeDataView(APIView):
     def post(self, request):
         serializer = AnalyzeRequestSerializer(data=request.data)
         if serializer.is_valid():
-            file_id = serializer.validated_data['file_id']
+            file_id = serializer.validated_data.get('file_id', None)
             prompt = serializer.validated_data['prompt']
-          
-            try:
-                arquivo = Arquivo.objects.get(id=file_id)
-            except Arquivo.DoesNotExist:
-                return Response({"error": "Arquivo não encontrado"}, status=status.HTTP_404_NOT_FOUND)
-            
-            try:
-                path = arquivo.arquivo.path
-                if path.endswith('.csv'):
-                    df = pd.read_csv(path)
-                    df_str = df.to_string()
-                elif path.endswith('.xlsx'):
-                    df = pd.read_excel(path, engine='openpyxl')
-                    df_str = df.to_string()
-                elif path.endswith('.pdf'):
-                    with pdfplumber.open(path) as pdf:
-                        text = "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
-                    df_str = text
-                elif path.endswith('.docx'):
-                    doc = docx.Document(path)
-                    text = "\n".join([para.text for para in doc.paragraphs])
-                    df_str = text
-                elif path.endswith('.txt'):
-                    with open(path, 'r', encoding='utf-8') as file:
-                        df_str = file.read()
-                elif path.endswith('.doc'):
-                    return Response({"error": "Formato .doc não suportado diretamente. Converta para .docx"}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    return Response({"error": "Formato de arquivo não suportado"}, status=status.HTTP_400_BAD_REQUEST)
-            except Exception as e:
-                return Response({"error": f"Erro ao ler o arquivo: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+            df_str = ""
+            if file_id:
+                try:
+                    arquivo = Arquivo.objects.get(id=file_id)
+                    path = arquivo.arquivo.path
+                    if path.endswith('.csv'):
+                        df = pd.read_csv(path)
+                        df_str = df.to_string()
+                    elif path.endswith('.xlsx'):
+                        df = pd.read_excel(path, engine='openpyxl')
+                        df_str = df.to_string()
+                    elif path.endswith('.pdf'):
+                        with pdfplumber.open(path) as pdf:
+                            df_str = "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+                    elif path.endswith('.docx'):
+                        doc = docx.Document(path)
+                        df_str = "\n".join([para.text for para in doc.paragraphs])
+                    elif path.endswith('.txt'):
+                        with open(path, 'r', encoding='utf-8') as file:
+                            df_str = file.read()
+                    else:
+                        df_str = "[Arquivo genérico recebido. Nenhuma leitura automatizada disponível.]"
+                except Arquivo.DoesNotExist:
+                    return Response({"error": "Arquivo não encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
-            full_prompt = f"Aqui estão os dados:\n{df_str}\n\n{prompt}"
+            final_prompt = f"{df_str}\n\n{prompt}" if df_str else prompt
 
-            try:
-                response = client.chat.completions.create(
-                    model="google/gemma-3-27b-it:free",
-                    messages=[
-                        {"role": "system", "content": "Você é um assistente útil."},
-                        {"role": "user", "content": full_prompt}
-                    ]
-                )
-                insights = response.choices[0].message.content.strip()
-                return Response({"insights": insights})
-            except Exception as e:
-                return Response({"error": f"Erro ao se comunicar com OpenRouter: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            response = client.chat.completions.create(
+                model="openchat/openchat-3.5-0106",
+                messages=[{"role": "user", "content": final_prompt}]
+            )
 
+            return Response({"response": response.choices[0].message.content})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteFileView(APIView):
@@ -133,3 +120,20 @@ class ChatDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
     permission_classes = [IsAuthenticated]
+
+class FreeChatView(APIView):
+    def post(self, request):
+        prompt = request.data.get("prompt")
+        chat_id = request.data.get("chat_id")
+
+        if not prompt or not chat_id:
+            return Response({"error": "Prompt e chat_id são obrigatórios."}, status=400)
+
+        mensagens = Mensagem.objects.filter(chat_id=chat_id).order_by('timestamp')
+        history = [{"role": m.role, "content": m.content} for m in mensagens]
+
+        response = client.chat.completions.create(
+            model="openchat/openchat-3.5-0106",
+            messages=history + [{"role": "user", "content": prompt}]
+        )
+        return Response({"response": response.choices[0].message.content})

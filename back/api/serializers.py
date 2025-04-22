@@ -7,10 +7,10 @@ class ArquivoSerializer(serializers.ModelSerializer):
         fields = ['id', 'arquivo', 'data_upload']
 
 class FileUploadSerializer(serializers.Serializer):
-   file = serializers.FileField()  # Esse campo precisa ser FileField
+   file = serializers.FileField()  
     
 class AnalyzeRequestSerializer(serializers.Serializer):
-    file_id = serializers.IntegerField()
+    file_id = serializers.IntegerField(required=False, allow_null=True)
     prompt = serializers.CharField()
 
 class MensagemSerializer(serializers.ModelSerializer):

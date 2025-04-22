@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import FileUploadView, AnalyzeDataView, DeleteFileView, ChatListCreateView, MensagemListCreateView, ChatDetailView
+from .views import FileUploadView, AnalyzeDataView, DeleteFileView, ChatListCreateView, MensagemListCreateView, ChatDetailView, FreeChatView
 
 urlpatterns = [
     path('upload/', FileUploadView.as_view(), name='file-upload'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('chats/', ChatListCreateView.as_view(), name='chat-list-create'),
     path('chats/<int:chat_id>/mensagens/', MensagemListCreateView.as_view(), name='mensagem-list-create'),
     path('chats/<int:pk>/', ChatDetailView.as_view(), name='chat-detail'), 
+    path('chat-livre/', FreeChatView.as_view(), name='chat-livre'),
 ]
