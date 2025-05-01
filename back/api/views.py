@@ -17,7 +17,7 @@ from deep_translator import GoogleTranslator
 from rest_framework.permissions import IsAuthenticated
 
 # Configuração da API OpenRouter
-client = OpenAI(api_key='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', base_url="https://openrouter.ai/api/v1")
+client = OpenAI(api_key='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', base_url="https://openrouter.ai/api/v1")
 
 class FileUploadView(APIView):
     parser_classes = [MultiPartParser, FormParser]  
@@ -72,7 +72,7 @@ class AnalyzeDataView(APIView):
             final_prompt = f"{df_str}\n\n{prompt}" if df_str else prompt
 
             response = client.chat.completions.create(
-                model="openchat/openchat-3.5-0106",
+                model="qwen/qwen3-4b:free",
                 messages=[{"role": "user", "content": final_prompt}]
             )
 
@@ -133,7 +133,7 @@ class FreeChatView(APIView):
         history = [{"role": m.role, "content": m.content} for m in mensagens]
 
         response = client.chat.completions.create(
-            model="openchat/openchat-3.5-0106",
+            model="qwen/qwen3-4b:free",
             messages=history + [{"role": "user", "content": prompt}]
         )
         return Response({"response": response.choices[0].message.content})

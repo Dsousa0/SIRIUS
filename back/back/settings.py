@@ -14,7 +14,7 @@ from pathlib import Path
 from decouple import config
 import os
 
-OPENROUTER_API_KEY = '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'
+OPENROUTER_API_KEY = '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'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

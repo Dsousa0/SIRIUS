@@ -6,7 +6,7 @@ import './index.css'
 
 function App() {
   const [messages, setMessages] = useState([
-    { role: 'system', content: 'Olá! Envie um arquivo e me diga o que deseja analisar.' }
+    { role: 'system', content: 'Olá! Seja bem-vindo! Pergunte-me alguma coisa.' }
   ])
   const [typing, setTyping] = useState(false)
   const [darkMode, setDarkMode] = useState(true)
